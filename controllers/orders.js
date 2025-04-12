@@ -4,8 +4,9 @@ const { v4: uuidv4 } = require('uuid');
 
 const generateDiscountCode = (requestedBy) => {
     const db = new DB();
+    let discountAmount = 10;
     const discountCode = Math.random().toString(36).substring(2, 15) + uuidv4().substring(0, 7);
-    db.discountCodes.push({ code: discountCode, amount: 10, id: uuidv4(), used: false });
+    db.discountCodes.push({ code: discountCode, amount: discountAmount, id: uuidv4(), used: false });
     return discountCode;
 }
 
@@ -55,7 +56,8 @@ const placeOrder = (req, res) => {
 const adminDiscountCode = (req, res) => {
     const db = new DB();
     const requestedBy = req.user.id;
-    if((db.orders.length + 1) % 2 === 0) {
+    let discountAfter = 2;
+    if((db.orders.length + 1) % discountAfter === 0) {
         const discountCode = generateDiscountCode(requestedBy);
         return res.status(200).json({ message: 'Discount code generated successfully', discountCode, success: true });
     }else{
